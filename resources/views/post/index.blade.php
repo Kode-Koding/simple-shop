@@ -21,20 +21,32 @@
         <thead>
             <tr>
                 <th>No</th>
-                <th>Title</th>
-                <th>Description</th>
-                @auth
-                    <th>Action</th>
-                @endauth
+                <th>Name</th>
+                <th>Price</th>
+                <th>Stocks</th>
+                <th>Action</th>
+                <th>Photo</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($posts as $item)
+            @foreach ($post as $item)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $item->title }}</td>
-                    <td>{{ $item->description }}</td>
-                    @auth
+                    <td>{{ $item->name }}</td>
+                    <td>{{ $item->price }}</td>
+                    <td>{{ $item->stocks }}</td>
+                    <td>
+                        @if ($item->photo != null)
+                        <div style="width:200px">
+                        <img src="{{ asset('storage/' . $item->photo)
+                        
+                        }}" class="img-fluid" alt="...">
+                        
+                        </div>
+                        @else
+                        <p class="text-info">tidak ada foto</p>
+                        @endif
+                        </td>
                         <td class="d-flex">
                             <a href="{{ route('post.edit', $item->id) }}" type="button" class="btn btn-primary me-3">Edit</a>
                             <form action="{{ route('post.destroy', $item->id) }}" method="post">
@@ -42,7 +54,7 @@
                                 <button type="submit" class="btn btn-danger me-3">Delete</button>
                             </form>
                         </td>
-                    @endauth
+                    
                 </tr>
             @endforeach
         </tbody>

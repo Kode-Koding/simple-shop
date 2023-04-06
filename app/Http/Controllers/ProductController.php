@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\facades\storage;
 
 class ProductController extends Controller
 {
@@ -12,10 +13,14 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        //dd($request->all());
         $products = Product::all();
         return view('product.index',compact('products'));
+     
+
+        
     }
 
     /**
@@ -36,10 +41,27 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->all();
-        $product = Product::create($data);
+        //$data = $request->all();
+        //$product = Product::create($data);
 
+        $file =$request->file('photo');
+        $filename = time() . '.' . $file->getClientOriginalExtension();
+        $path =$request->file('photo')->storeAs('public/products',$filename);
+
+        $path = str_replace('public/','',$path);
+        
+        //dd($path);
+        $data = [
+            'name' => $request->name,
+            'price' => $request->price,
+            'stocks' => $request->stocks,
+            'photo' => $path
+        ];
+        $product = Product::create($data);
         return redirect()->route('product.index');
+        //return response()->json(['succes' =>'File Upload Successfully.']);
+
+        
     }
 
     /**
@@ -74,14 +96,23 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+        $file =$request->file('photo');
+        $filename = time() . '.' .
+        $file->getClientOriginalExtension();
+        $path =$request->file('photo')->storeAs('public/products',$filename);
+
+        $path = str_replace('public/','',$path);
         $product = Product::find($id);
 
         $product->name = $request->name;
         $product->price = $request->price;
         $product->stocks = $request->stocks;
+        $product->photo = $path;
         $product->save();
-
+        Storage::delete(['public/storage/products'.$product->photo]);
         return redirect()->route('product.index');
+        
     }
 
     /**

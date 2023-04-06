@@ -25,6 +25,7 @@
                 <th>Price</th>
                 <th>Stocks</th>
                 <th>Action</th>
+                <th>Photo</th>
             </tr>
         </thead>
         <tbody>
@@ -34,6 +35,18 @@
                     <td>{{ $item->name }}</td>
                     <td>{{ $item->price }}</td>
                     <td>{{ $item->stocks }}</td>
+                    <td> 
+                        @if ($item->photo != null)
+                        <div style="width:200px">
+                        <img src="{{ asset('storage/' . $item->photo)
+                        
+                        }}" class="img-fluid" alt="...">
+                        
+                        </div>
+                        @else
+                        <p class="text-info">tidak ada foto</p>
+                        @endif
+                    </td>
                     <td class="d-flex">
                         <a href="{{ route('product.edit', $item->id) }}" type="button" class="btn btn-primary me-3">Edit</a>
                         <form action="{{ route('product.destroy', $item->id) }}" method="post">
